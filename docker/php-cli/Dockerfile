@@ -1,0 +1,25 @@
+FROM php:8.4-cli-alpine3.22
+
+ENV XDEBUG_VERSION=3.4.7
+
+RUN apk add --no-cache libpq-dev bash coreutils git linux-headers \
+    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && git clone --branch $XDEBUG_VERSION --depth 1 https://github.com/xdebug/xdebug.git /usr/src/php/ext/xdebug \
+    && docker-php-ext-configure xdebug --enable-xdebug-dev \
+    && docker-php-ext-install pdo_pgsql xdebug \
+    && apk del git linux-headers
+
+RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
+
+COPY ./php/conf.d /usr/local/etc/php/conf.d
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/bin --filename=composer --version=2.9.1 --quiet
+
+ARG UID=1000
+ARG GID=1000
+
+RUN addgroup -g "${GID}" app && adduser -u "${UID}" -G app -s /bin/sh -D app
+
+WORKDIR /app
+
+USER app
