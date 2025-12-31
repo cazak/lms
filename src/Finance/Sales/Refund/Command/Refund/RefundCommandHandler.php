@@ -14,7 +14,7 @@ final readonly class RefundCommandHandler
     public function __invoke(RefundCommand $command): void
     {
 //        $reserveData = $this->findReserveByUserAndStatusAndCourse($command->reserveId);
-        $reserveData = $this->findReserveByUserAndStatusAndCourse($command->courseId, $command->buyerId);
+        $reserveData = $this->findActiveReserveByUserAndCourse($command->courseId, $command->buyerId);
 //        $buyerId = $command->buyerId;
 //        $authorId = $command->authorId;
 
@@ -32,6 +32,9 @@ final readonly class RefundCommandHandler
         );
 
         $command = new CancelReserveCommand($reserveData->id, $refund->getId());
+        ($this->cancelReserveCommandHandler)($command);
+
+        $command = new CancelPurchaseCommand($reserveData->buyerId, $command->courseId);
         ($this->cancelReserveCommandHandler)($command);
 
         $this->repository->save($refund);

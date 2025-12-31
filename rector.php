@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-use Doctrine\ORM\Mapping\Embeddable;
-use Doctrine\ORM\Mapping\Entity;
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Config\RectorConfig;
 use Rector\Doctrine\Set\DoctrineSetList;

@@ -19,6 +19,9 @@ use App\Finance\Sales\Purchase\Command\Purchase\ReserveCommand;
 use App\Finance\Sales\Purchase\Command\Purchase\ReserveCommandHandler;
 use App\Finance\Sales\Purchase\Command\Purchase\TransactionSource;
 
+/**
+ * Покупка курса
+ */
 final readonly class PurchaseCommandHandler
 {
     public function __construct(
