@@ -12,50 +12,22 @@ final readonly class CourseCompletedEventHandler
     {
     }
 
-    public function __invoke($event): void
+    /**
+     * @param CourseCreatedEvent $event
+     */
+    public function __invoke(Event $event): void
     {
-        $template = $this->repository->findTemplateByCourseId($event->courseId);
-        $courseData = $this->courseQuery->findById($event->courseId);
-        $studentData = $this->studentQuery->findById($event->studentId);
-
-        $this->generator->generate($template, $courseData, $studentData);
-    }
-}
-
-class CreateCertificateHandler
-{
-    public function __construct(private CertificateGenerator $generator)
-    {
-    }
-
-    public function __invoke($command)
-    {
-        $certificatePath = $this->generator->generate($command);
-    }
-}
-
-class CertificateGenerator
-{
-    public function generate($template, $course, $student): Certificate
-    {
-        $result = $this->twig->render($this->getPathToCertificateTemplate(), [
-            'image' => $template->getImage(),
-            'style' => $template->getStyle(),
-            'studentName' => $student->getFullName(),
-            'courseName' => $course->getName(),
-        ]);
-
-        $fileName = $this->fileSaver->generateName();
-        $pathToCertificate = $this->fileSaver->save($fileName, $result);
-
-        return new Certificate(
-            Id::generate(),
-            new StudentId($student->getId()),
-            new CourseId($course->getId()),
-            $template,
-            $this->codeGenerator->generateCertificateCode(),
-            $pathToCertificate,
-            new DateTimeImmutable(),
+        $command = new CreateCertificateCommand(
+            $event->courseId,
+            $event->studentId,
         );
+
+        $this->commandBus->dispatch($command);
+
+//        $template = $this->repository->findTemplateByCourseId($event->courseId);
+//        $courseData = $this->courseQuery->findById($event->courseId);
+//        $studentData = $this->studentQuery->findById($event->studentId);
+//
+//        $this->generator->generate($template, $courseData, $studentData);
     }
 }

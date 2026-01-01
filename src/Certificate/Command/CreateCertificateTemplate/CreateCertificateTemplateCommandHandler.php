@@ -10,6 +10,9 @@ use App\Certificate\Command\Exception;
 use App\Certificate\Command\Id;
 use App\Certificate\Command\Style;
 
+/**
+ * В UI просто отдельная страница (урл) на создание темплейта сертификата для уже созданного курса
+ */
 final readonly class CreateCertificateTemplateCommandHandler
 {
     public function __invoke(CreateCertificateTemplateCommand $command): void

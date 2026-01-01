@@ -24,7 +24,25 @@ final readonly class Certificate
 
     private string $path;
 
-    private string $code;
+    private Code $code;
 
     private DateTimeImmutable $issuedAt;
+
+    public function __construct(
+        Id $id,
+        StudentId $studentId,
+        CourseId $courseId,
+        CertificateTemplate $template,
+        string $path,
+        Code $code,
+        DateTimeImmutable $issuedAt = new DateTimeImmutable()
+    ) {
+        $this->id = $id;
+        $this->studentId = $studentId;
+        $this->courseId = $courseId;
+        $this->template = $template;
+        $this->path = $path;
+        $this->code = $code;
+        $this->issuedAt = $issuedAt;
+    }
 }
